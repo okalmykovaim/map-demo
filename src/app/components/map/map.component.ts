@@ -1,10 +1,12 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, Inject, OnDestroy, OnInit} from '@angular/core';
 import {HereApiService} from '../../services/here-api.service';
 import {IHotel} from '../interfaces/IHotel';
 import {debounce} from 'lodash';
 import {environment} from '../../../environments/environment';
 import {IPosition} from '../interfaces/IPosition';
-import {DOCUMENT} from "@angular/common";
+import {DOCUMENT} from '@angular/common';
+import {ActiveHotelService} from '../../services/active-hotel.service';
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-map',
@@ -12,33 +14,50 @@ import {DOCUMENT} from "@angular/common";
   styleUrls: ['./map.component.scss'],
   providers: [HereApiService]
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit, OnDestroy {
 
   public initialLat = environment.initialLatitude;
   public initialLng =  environment.initialLongitude;
   public hotels: IHotel[] = [];
   public activeHotel: IHotel;
+  private activeHotelSubscription: Subscription;
 
   constructor(
     private hereService: HereApiService,
+    private activeHotelService: ActiveHotelService,
     @Inject(DOCUMENT) private document: Document
   ) {
-    this.debouncedLoadHotels = debounce(this.debouncedLoadHotels, 300)
+    this.debouncedLoadHotels = debounce(this.debouncedLoadHotels, 200)
   }
 
   ngOnInit(): void {
+    this.activeHotelSubscription = this.activeHotelService.activeHotel.subscribe( hotel => {
+      this.activeHotel= hotel;
+    });
     this.loadInitialHotels();
+  }
+
+  ngOnDestroy(): void {
+    this.activeHotelSubscription.unsubscribe();
   }
 
   loadHotels(lat:number, lng:number): void {
     this.hereService.getHotels(lat, lng).subscribe( data => {
       if(data?.results) {
         /* show only hotels with position */
-        this.hotels = data.results.filter( hotel => !!hotel.position);
-        if (this.hotels.length > 0 ) {
+        const newHotels: IHotel[] = data.results.filter( hotel => !!hotel.position);
+        if (newHotels.length > 0) {
+          const newUniqueHotels =  newHotels.reduce( (acc, newHotel) => {
+            const exist = this.hotels.find( hotel => hotel.id === newHotel.id);
+            if (!exist) {
+              acc.push(newHotel);
+            }
+            return acc;
+          },[]);
+
+          this.hotels = [...this.hotels, ...newUniqueHotels];
         }
       }
-      console.log('this.hotels', this.hotels);
     })
   }
 
@@ -50,10 +69,8 @@ export class MapComponent implements OnInit {
     if (res) {
       this.initialLat = res.lat;
       this.initialLng = res.lng;
-      console.log('getLocation res', res);
       this.loadHotels(res.lat, res.lng);
     } else {
-      /* if we can't get user location we load map with initial values from environment file */
       this.loadHotels(this.initialLat, this.initialLng);
     }
   }
@@ -99,8 +116,8 @@ export class MapComponent implements OnInit {
    */
   isActive(position: number[]): boolean {
     let isActive = false;
-    if (this.activeHotel) {
-      if (this.activeHotel.position[0] === position[0] && this.activeHotel.position[1] === position[1]) {
+    if (this.activeHotelService.activeHotel) {
+      if (this.activeHotel?.position[0] === position[0] && this.activeHotel?.position[1] === position[1]) {
         isActive = true;
       }
     }
@@ -111,10 +128,10 @@ export class MapComponent implements OnInit {
    * OnMarkerClick -set active hotel
    */
   clickedMarker(hotel: IHotel): void {
-    this.activeHotel = hotel;
+    this.activeHotelService.setActiveHotel(hotel);
 
     /* scroll into view the card that was check on the map */
-    document.getElementById(hotel.id).scrollIntoView({ behavior: 'smooth'});
+    document.getElementById(hotel.id).scrollIntoView({ behavior: 'smooth', inline: 'start'});
   }
 
 }

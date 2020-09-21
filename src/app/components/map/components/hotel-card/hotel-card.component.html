@@ -3,7 +3,7 @@
     <img alt="Limehome" src="assets/images/mock-room.png"/>
     <div class="info">
       <div class="top-section">
-       <h3>{{hotel.title}}</h3>
+       <h3 (click)="onTitleClick(hotel)">{{limitTitle(hotel.title)}}</h3>
         <p class="distance" *ngIf="hotel.distance">{{transformDistance(hotel.distance)}} km from the city center</p>
       </div>
       <div class="bottom-section">

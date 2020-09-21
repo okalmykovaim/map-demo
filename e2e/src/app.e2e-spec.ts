@@ -8,9 +8,15 @@ describe('workspace-project App', () => {
     page = new AppPage();
   });
 
-  it('should display welcome message', () => {
-    page.navigateTo();
-    expect(page.getTitleText()).toEqual('map-demo app is running!');
+  it('should have a data on the Home page', () => {
+    page.navigateTo('');
+    expect(page.getMenuText()).toEqual('Home');
+    expect(page.getHomeLogo()).toContain('limehome-Logo.svg');
+  });
+
+  it('should have the map on the Map page with an iframe inside', () => {
+    page.navigateTo('/map');
+    expect(page.getMapIframe()).toEqual('iframe');
   });
 
   afterEach(async () => {

@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   templateUrl: './main-logo.component.html',
   styleUrls: ['./main-logo.component.scss']
 })
-export class MainLogoComponent{
+export class MainLogoComponent {
 
   constructor() { }
 }

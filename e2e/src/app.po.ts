@@ -1,11 +1,19 @@
 import { browser, by, element } from 'protractor';
 
 export class AppPage {
-  navigateTo(): Promise<unknown> {
-    return browser.get(browser.baseUrl) as Promise<unknown>;
+  navigateTo(path: string): Promise<unknown> {
+    return browser.get(`${browser.baseUrl}${path}`) as Promise<unknown>;
   }
 
-  getTitleText(): Promise<string> {
-    return element(by.css('app-root .content span')).getText() as Promise<string>;
+  getHomeLogo(): Promise<string> {
+    return element(by.css('img')).getAttribute('src') as Promise<string>;
+  }
+
+  getMapIframe(): Promise<string> {
+    return element(by.css('agm-map iframe')).getTagName() as Promise<string>;
+  }
+
+  getMenuText(): Promise<string> {
+    return element(by.css('.menu-burger span')).getText() as Promise<string>;
   }
 }
