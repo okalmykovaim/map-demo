@@ -1,0 +1,21 @@
+<div class="map-wrapper">
+  <app-cards [class]="activeHotel ? 'show' : ''" [activeHotel]="activeHotel" [hotels]="hotels"></app-cards>
+  <agm-map
+    [usePanning]="false"
+    (centerChange)="onMapCenterChange($event)"
+    [zoom]="12"
+    [latitude]="initialLat"
+    [longitude]="initialLng"
+    [disableDefaultUI]="true"
+  >
+    <agm-marker
+      [zIndex]="isActive(hotel.position) ? 999 : 1"
+      *ngFor="let hotel of hotels"
+      [latitude]="hotel.position[0]"
+      [longitude]="hotel.position[1]"
+      (markerClick)="clickedMarker(hotel)"
+      [iconUrl]=" isActive(hotel.position) ? '/assets/images/map-Home-Icon-Active.svg' : '/assets/images/map-Home-Icon.svg'"
+    >
+    </agm-marker>
+  </agm-map>
+</div>

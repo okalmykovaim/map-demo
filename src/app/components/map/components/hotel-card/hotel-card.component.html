@@ -1,0 +1,19 @@
+<div  class="card-wrapper" *ngIf="hotel">
+  <div class="photo-info">
+    <img alt="Limehome" src="assets/images/mock-room.png"/>
+    <div class="info">
+      <div class="top-section">
+       <h3>{{hotel.title}}</h3>
+        <p class="distance" *ngIf="hotel.distance">{{transformDistance(hotel.distance)}} km from the city center</p>
+      </div>
+      <div class="bottom-section">
+        <span>&#163;98</span>
+        <p>Design may vary</p>
+      </div>
+    </div>
+
+  </div>
+  <div class="button-wrapper">
+   <button>book</button>
+  </div>
+</div>

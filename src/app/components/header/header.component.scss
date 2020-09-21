@@ -1,0 +1,14 @@
+:host {
+  display: block;
+  background-color: #ebeae6;
+  padding: 16px;
+  box-sizing: border-box;
+  height: 58px;
+
+  header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}

@@ -1,0 +1,10 @@
+<div class="cards-wrapper">
+    <app-hotel-card
+      *ngFor="let hotel of hotels"
+      [id]="hotel.id"
+      [hotel]="hotel"
+      (click)="onCardClick(hotel.id)"
+      [class]="activeHotel?.id === hotel.id ? 'active' : ''"
+    >
+    </app-hotel-card>
+</div>

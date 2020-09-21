@@ -1,0 +1,85 @@
+:host {
+  display: inline-block;
+  width: 100%;
+  height: 100%;
+
+  &.active {
+    .card-wrapper {
+      @media (min-width: 480px) {
+        box-shadow: 0 -8px #F7941D;
+      }
+    }
+  }
+
+  .card-wrapper {
+    width: 280px;
+    height: 200px;
+    margin-right: 8px;
+    background-color: white;
+    padding: 16px;
+    box-sizing: border-box;
+
+    .photo-info {
+      display: flex;
+
+      img {
+        width: auto;
+        height: 120px;
+        margin-right: 16px;
+      }
+
+      .info {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+
+        h3, p {
+          font-family: Montserrat,sans-serif;
+          font-size: 12px;
+          line-height: 16px;
+          color: #222222;
+          margin-block-start: 0;
+          margin-block-end: 0;
+        }
+        p {
+          color: #858D94;
+        }
+
+        .top-section {
+          h3 {
+            margin-bottom: 5px;
+          }
+          .distance {
+            text-transform: uppercase;
+          }
+        }
+
+        .bottom-section {
+          span {
+            font-size: 16px;
+            font-weight: bold;
+          }
+
+        }
+      }
+    }
+
+    .button-wrapper {
+      padding-top: 16px;
+      button {
+        height: 32px;
+        width: 100%;
+        border: none;
+        color: white;
+        background-color: #F7941D;
+
+        &:hover {
+          opacity: 0.9;
+        }
+        &:focus {
+          outline: none;
+        }
+      }
+    }
+  }
+}

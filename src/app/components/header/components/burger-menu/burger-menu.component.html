@@ -1,0 +1,20 @@
+<div class="menu-burger">
+
+  <div class="left-menu" [ngClass]="showMenu ? 'active' : ''">
+    <div class="left-menu-inner">
+      <app-main-logo></app-main-logo>
+      <div><a href="/">Home</a></div>
+      <div><a href="/map">Map</a></div>
+    </div>
+  </div>
+
+  <div class="top-links">
+    <div class="top-links-wrapper">
+      <span><a href="/">Home</a></span>
+      <span><a href="/map">Map</a></span>
+    </div>
+    <div class="burger-button" (click)="onBurgerClick()">
+      <img alt="Burger Menu" src="assets/images/map-Burger-Icon.svg"/>
+    </div>
+  </div>
+</div>
