@@ -12,7 +12,7 @@ export class BurgerMenuComponent {
   constructor() { }
 
   /** Open/hide left menu */
-  onBurgerClick() {
+  menuTrigger() {
     this.showMenu = !this.showMenu;
   }
 
