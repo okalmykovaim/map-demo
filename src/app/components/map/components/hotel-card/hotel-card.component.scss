@@ -51,6 +51,10 @@
             cursor: pointer;
             max-height: 32px;
             overflow: hidden;
+
+            &:hover {
+              opacity: 0.8;
+            }
           }
           .distance {
             text-transform: uppercase;

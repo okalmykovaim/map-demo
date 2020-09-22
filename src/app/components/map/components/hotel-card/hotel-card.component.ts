@@ -26,7 +26,7 @@ export class HotelCardComponent{
    * Change an active hotel
    */
   onTitleClick(hotel: IHotel) {
-    this.activeHotelService.setActiveHotel(hotel);
+    this.activeHotelService.setActiveHotelAndMapCenter(hotel, {lat: hotel.position[0], lng: hotel.position[1]});
   }
 
   /**

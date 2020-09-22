@@ -16,11 +16,11 @@ import {Subscription} from 'rxjs';
 })
 export class MapComponent implements OnInit, OnDestroy {
 
-  public initialLat = environment.initialLatitude;
-  public initialLng =  environment.initialLongitude;
+  public mapLat = environment.initialLatitude;
+  public mapLng =  environment.initialLongitude;
   public hotels: IHotel[] = [];
   public activeHotel: IHotel;
-  private activeHotelSubscription: Subscription;
+  public subscriptions: Subscription[] = [];
 
   constructor(
     private hereService: HereApiService,
@@ -31,20 +31,28 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.activeHotelSubscription = this.activeHotelService.activeHotel.subscribe( hotel => {
+    this.subscriptions.push(this.activeHotelService.activeHotel.subscribe( hotel => {
       this.activeHotel= hotel;
-    });
+    }));
+    this.subscriptions.push(this.activeHotelService.mapCenterCords.subscribe( position => {
+      if (position?.lat){
+        this.mapLat= position.lat;
+        this.mapLng= position.lng;
+      }
+    }));
+    this.activeHotelService.setMapCenter({ lat: environment.initialLatitude, lng: environment.initialLongitude});
     this.loadInitialHotels();
   }
 
   ngOnDestroy(): void {
-    this.activeHotelSubscription.unsubscribe();
+    /* unsubscribe from all subscriptions */
+    this.subscriptions.forEach((s: Subscription) => s.unsubscribe());
   }
 
   loadHotels(lat:number, lng:number): void {
     this.hereService.getHotels(lat, lng).subscribe( data => {
       if(data?.results) {
-        /* show only hotels with position */
+        /* show only hotels with position and add new unique hotels */
         const newHotels: IHotel[] = data.results.filter( hotel => !!hotel.position);
         if (newHotels.length > 0) {
           const newUniqueHotels =  newHotels.reduce( (acc, newHotel) => {
@@ -62,16 +70,15 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Load new hotels new user/default cords location
+   * Load new hotels near user/default cords location
    */
   async loadInitialHotels() {
     const res = await this.getLocation();
     if (res) {
-      this.initialLat = res.lat;
-      this.initialLng = res.lng;
+      this.activeHotelService.setMapCenter(res);
       this.loadHotels(res.lat, res.lng);
     } else {
-      this.loadHotels(this.initialLat, this.initialLng);
+      this.loadHotels(this.mapLat, this.mapLng);
     }
   }
 
@@ -90,7 +97,7 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Get user location to set as initial for map
+   * Get user location to set as initial for the map center
    */
   getLocation(): Promise<IPosition> {
     return new Promise(resolve => {
